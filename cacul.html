@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>참여 금액 계산기</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; }
+        .container { width: 90%; margin: auto; max-width: 500px; }
+        .input-group { margin: 3px 0; display: flex; justify-content: space-between; font-size: 12px; }
+        .input-group-wide { margin: 30px 0; display: flex; justify-content: space-between; font-size: 12px; }
+        input { width: 30%; padding: 2px; font-size: 12px; }
+        button { padding: 5px; margin-top: 10px; font-size: 12px; }
+        .result { margin-top: 10px; font-weight: bold; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h3>참여 금액 계산기</h3>
+        <div id="items"></div>
+        
+        <div class="input-group-wide">
+            <label>참여인원:</label>
+            <input type="number" id="participants" min="1">
+        </div>
+        <div class="input-group">
+            <label>수수료 (%):</label>
+            <input type="number" id="fee" min="0">
+        </div>
+        <button onclick="calculate()">계산하기</button>
+        <div class="result" id="totalAmount">총액: 0 (수수료: 0)</div>
+        <div class="result" id="perPerson">분배금액: 0</div>
+    </div>
+
+    <script>
+        function createItems() {
+            let itemsDiv = document.getElementById("items");
+            for (let i = 1; i <= 20; i++) {
+                let div = document.createElement("div");
+                div.className = "input-group";
+                div.innerHTML = `<label>아이템 ${i}:</label><input type='text' style='width: 40%;'><input type='number' class='price' min='0' style='width: 20%;'>`;
+                itemsDiv.appendChild(div);
+            }
+        }
+
+        function calculate() {
+            let total = 0;
+            let prices = document.getElementsByClassName("price");
+            for (let input of prices) {
+                let value = parseFloat(input.value) || 0;
+                total += value;
+            }
+
+            let fee = parseFloat(document.getElementById("fee").value) || 0;
+            let feeAmount = Math.round((fee / 100) * total);
+            total -= feeAmount;
+
+            let participants = parseInt(document.getElementById("participants").value);
+            if (!participants || participants <= 0) {
+                alert("참여 인원을 입력해주세요.");
+                return;
+            }
+
+            let perPerson = Math.round(total / participants);
+            document.getElementById("totalAmount").innerText = `총액: ${total.toLocaleString()} (수수료: ${feeAmount.toLocaleString()})`;
+            document.getElementById("perPerson").innerText = `분배금액: ${perPerson.toLocaleString()}`;
+        }
+
+        createItems();
+    </script>
+</body>
+</html>
